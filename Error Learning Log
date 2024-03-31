@@ -1,0 +1,3 @@
+While creating RDS with terraform it have thrown a error saying invalid combination of instance class, engine, and engine version that is supported by RDS
+- changed db instance to t3 medium(db.t3.medium)
+  sql engine to 8 erlier it is 5.5
