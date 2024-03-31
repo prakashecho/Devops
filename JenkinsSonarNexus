@@ -1,0 +1,22 @@
+SonarQube
+Security Group
+ssh 22 myip
+http 80 anywhere
+http 80 jenkins-sg
+
+just use ec2 ip on browser sonarqube opens
+login-admin pass-admin default
+
+Generate new token to intregrate with jenkins
+click adminstrator-- myaccount-- security-- generate token and copy that
+
+Manage jenkins-configure system--- name- sonarqube pvt ip---add--select kind , secret text,paste token of sonar, 
+
+
+update sg-- allow all traffic from jenkins to sonar
+allow all traffic form sonar to jenkins
+
+
+
+
+
