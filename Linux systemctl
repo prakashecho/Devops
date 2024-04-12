@@ -1,0 +1,28 @@
+Here's How to Use The Systemctl Command
+To use the systemctl command, it is important to learn the syntax and available options.
+
+Here's how the syntax looks like:
+
+systemctl <command> <service_name>
+Here,
+
+<command>: this is where you specify the action you want to execute over the service such as stop, start, etc.
+<service_name>: this is where you specify the name of the service that you would like to work with.
+To manage services, you have various commands to use with the systemctl command, here's a list of one of the most useful ones:
+
+Command	Description
+systemctl start [service]	Start a service and run it in the background.
+systemctl stop [service]	Stop a currently running service.
+systemctl enable [service]	Configure a service to start automatically at system boot.
+systemctl disable [service]	Configure a service to not start automatically at system boot.
+systemctl status [service]	Display the current status (running, stopped, etc.) of a service.
+systemctl restart [service]	Stop a running service and then start it again.
+systemctl reload [service]	Reload the configuration of a service without stopping it.
+systemctl mask [service]	Prevent a service from being started, even manually.
+systemctl unmask [service]	Allow a previously masked service to be started.
+systemctl set-default [target]	Change the default system target (runlevel) for the next boot.
+systemctl list-unit-files	List all installed unit files and their current state (enabled/disabled).
+systemctl list-dependencies [unit]	Show the dependencies (other units) required for a specific unit.
+systemctl list-sockets	List all active sockets (for inter-process communication).
+systemctl list-jobs	Show all currently active systemd jobs (ongoing operations).
+systemctl list-units	List all loaded and active systemd units (services, sockets, etc.
