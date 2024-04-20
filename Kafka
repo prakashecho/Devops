@@ -1,0 +1,54 @@
+Kafka
+
+High level design of kafka
+producers-consumers
+publishers-subscribers
+pub-sub
+
+
+  master-1 slave-2
+slave is nothing but replica of master
+all writes goes to master
+all reads can go to master or slave
+
+if master fails ques are safe
+one of the slave becomes master
+
+
+
+High Availability
+
+TOPICS
+create multiple topics which are not related to each other
+
+train of thought
+
+PARTITION - Consumer groups
+With in a Topic we will have multiple ques
+1 topic 100 partitions
+p0 p1 p2 ....p100
+p0[]
+p1[]
+p2[]
+.
+.
+.
+p100[]
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
