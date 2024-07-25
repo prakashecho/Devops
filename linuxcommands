@@ -1,0 +1,10 @@
+give size of each file in the folder
+du -h --max-depth=1 file-path
+
+memory usage
+free -h
+vmstat -s
+cat /proc/meminfo
+top
+htop
+  this is best graphical vie
