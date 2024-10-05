@@ -1,5 +1,9 @@
 #!/bin/bash
+
+# Update the package list
 sudo apt update
+
+# Install necessary packages for Apache, PHP, and MySQL
 sudo apt install apache2 \
                  ghostscript \
                  libapache2-mod-php \
@@ -14,9 +18,15 @@ sudo apt install apache2 \
                  php-mysql \
                  php-xml \
                  php-zip -y
+
+# Create directory for WordPress and set correct permissions
 sudo mkdir -p /srv/www
 sudo chown www-data: /srv/www
+
+# Download and extract WordPress
 curl https://wordpress.org/latest.tar.gz | sudo -u www-data tar zx -C /srv/www
+
+# Configure Apache for WordPress
 echo "<VirtualHost *:80>
     DocumentRoot /srv/www/wordpress
     <Directory /srv/www/wordpress>
@@ -29,27 +39,52 @@ echo "<VirtualHost *:80>
         Options FollowSymLinks
         Require all granted
     </Directory>
-</VirtualHost>" >> /etc/apache2/sites-available/wordpress.conf
+</VirtualHost>" | sudo tee /etc/apache2/sites-available/wordpress.conf
 
+# Enable the WordPress site and mod_rewrite
 sudo a2ensite wordpress
 sudo a2enmod rewrite
+
+# Disable the default Apache site
 sudo a2dissite 000-default
+
+# Reload Apache to apply changes
 sudo service apache2 reload
 
-s	 <<EOF
+# Set up MySQL
+sudo service mysql start
+
+# MySQL commands to create database and user for WordPress
+sudo mysql -u root <<EOF
 CREATE DATABASE wordpress;
 CREATE USER 'wordpress'@'localhost' IDENTIFIED BY 'password';
-GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER ON wordpress.* TO 'wordpress'@'localhost';
+GRANT ALL PRIVILEGES ON wordpress.* TO 'wordpress'@'localhost';
 FLUSH PRIVILEGES;
-quit
+EXIT;
 EOF
 
-sudo service mysql start
+# Copy and configure wp-config.php
 sudo -u www-data cp /srv/www/wordpress/wp-config-sample.php /srv/www/wordpress/wp-config.php
 
+# Update wp-config.php with database details
 sudo -u www-data sed -i 's/database_name_here/wordpress/' /srv/www/wordpress/wp-config.php
 sudo -u www-data sed -i 's/username_here/wordpress/' /srv/www/wordpress/wp-config.php
 sudo -u www-data sed -i 's/password_here/password/' /srv/www/wordpress/wp-config.php
 
+# Fetch the salt keys and replace them in wp-config.php
+SALT=$(curl -s https://api.wordpress.org/secret-key/1.1/salt/)
+sudo -u www-data sed -i "/AUTH_KEY/d" /srv/www/wordpress/wp-config.php
+sudo -u www-data sed -i "/SECURE_AUTH_KEY/d" /srv/www/wordpress/wp-config.php
+sudo -u www-data sed -i "/LOGGED_IN_KEY/d" /srv/www/wordpress/wp-config.php
+sudo -u www-data sed -i "/NONCE_KEY/d" /srv/www/wordpress/wp-config.php
+sudo -u www-data sed -i "/AUTH_SALT/d" /srv/www/wordpress/wp-config.php
+sudo -u www-data sed -i "/SECURE_AUTH_SALT/d" /srv/www/wordpress/wp-config.php
+sudo -u www-data sed -i "/LOGGED_IN_SALT/d" /srv/www/wordpress/wp-config.php
+sudo -u www-data sed -i "/NONCE_SALT/d" /srv/www/wordpress/wp-config.php
+echo "$SALT" | sudo -u www-data tee -a /srv/www/wordpress/wp-config.php
 
-	
+# Restart services to ensure everything is running
+sudo service apache2 restart
+sudo service mysql restart
+
+echo "WordPress installation is complete!"
